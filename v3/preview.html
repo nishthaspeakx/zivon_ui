@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zivon — States</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#0A0A0F; color:#EDEDF2; min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    display:flex; flex-direction:column; align-items:center;
+    padding:28px 16px 40px; -webkit-font-smoothing:antialiased;
+  }
+  .wordmark { display:none; }
+  .stage { position:relative; width:min(340px,86vw); aspect-ratio:9/16; background:transparent; }
+  video { width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .18s ease; background:transparent; }
+  video.show { opacity:1; }
+  .label { margin:20px 0 6px; font-size:22px; letter-spacing:.32em; text-transform:uppercase; font-weight:800; opacity:.95; min-height:26px; }
+  .buttons { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:22px; max-width:420px; }
+  button {
+    cursor:pointer; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.05);
+    color:#EDEDF2; font-size:14px; font-weight:500; padding:13px 24px; border-radius:999px;
+    transition:all .18s ease; min-width:120px;
+  }
+  button:hover { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.28); }
+  button:active { transform:scale(.96); }
+  button.active { box-shadow:0 0 0 1px currentColor, 0 0 20px -4px currentColor; }
+  button[data-s="idle"].active       { color:#6f86ff; background:rgba(90,110,255,.16); }
+  button[data-s="listening"].active  { color:#42dcff; background:rgba(60,210,255,.16); }
+  button[data-s="thinking"].active   { color:#c66bff; background:rgba(180,80,255,.16); }
+  button[data-s="responding"].active { color:#ffc24d; background:rgba(255,180,60,.16); }
+  .loopwrap { margin-top:18px; font-size:12px; opacity:.55; display:flex; gap:7px; align-items:center; }
+</style>
+</head>
+<body>
+  <div class="wordmark">ZIVON</div>
+
+  <div class="stage">
+    <video id="vid" playsinline autoplay muted loop preload="auto"></video>
+  </div>
+
+  <div class="label" id="label">ZIVON</div>
+
+  <div class="buttons">
+    <button data-s="idle"       data-src="0_idle.mp4">Idle</button>
+    <button data-s="listening"  data-src="1_listening.mp4">Listening</button>
+    <button data-s="thinking"   data-src="2_thinking.mp4">Thinking</button>
+    <button data-s="responding" data-src="3_responding.mp4">Shipping</button>
+  </div>
+
+  <script>
+    const vid = document.getElementById('vid');
+    const btns = [...document.querySelectorAll('button[data-s]')];
+
+    let swapToken = 0;
+    function play(btn){
+      btns.forEach(b=>b.classList.toggle('active', b===btn));
+
+      const token = ++swapToken;
+      vid.classList.remove('show');   // hide immediately so prev frame doesn't show
+
+      // wait for the fade-out, then swap src and only reveal once new frame decoded
+      setTimeout(() => {
+        if (token !== swapToken) return; // a newer click happened, abort
+        vid.muted = true;
+        vid.loop = true;
+        vid.removeAttribute('src');
+        vid.load();                     // clear any prior frame
+        vid.src = btn.dataset.src + '?v=' + Date.now();
+        vid.load();
+
+        const reveal = () => {
+          if (token !== swapToken) return;
+          vid.classList.add('show');
+          vid.play().catch(() => {});
+        };
+        // 'loadeddata' fires once the first frame is decoded
+        vid.addEventListener('loadeddata', reveal, { once: true });
+      }, 190);
+    }
+    btns.forEach(b => b.addEventListener('click', ()=>play(b)));
+
+    // start on idle
+    play(btns[0]);
+  </script>
+</body>
+</html>
