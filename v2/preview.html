@@ -12,11 +12,11 @@
     display:flex; flex-direction:column; align-items:center;
     padding:28px 16px 40px; -webkit-font-smoothing:antialiased;
   }
-  .wordmark { font-size:14px; letter-spacing:.42em; font-weight:600; opacity:.85; padding-left:.42em; margin-bottom:22px; }
+  .wordmark { display:none; }
   .stage { position:relative; width:min(340px,86vw); aspect-ratio:9/16; background:transparent; }
   video { width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .18s ease; background:transparent; }
   video.show { opacity:1; }
-  .label { margin:18px 0 4px; font-size:16px; letter-spacing:.18em; text-transform:uppercase; opacity:.55; min-height:20px; }
+  .label { margin:20px 0 6px; font-size:22px; letter-spacing:.32em; text-transform:uppercase; font-weight:800; opacity:.95; min-height:26px; }
   .buttons { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:22px; max-width:420px; }
   button {
     cursor:pointer; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.05);
@@ -40,7 +40,7 @@
     <video id="vid" playsinline autoplay muted loop preload="auto"></video>
   </div>
 
-  <div class="label" id="label">Idle</div>
+  <div class="label" id="label">ZIVON</div>
 
   <div class="buttons">
     <button data-s="idle"       data-src="0_idle.mp4">Idle</button>
@@ -49,18 +49,13 @@
     <button data-s="responding" data-src="3_responding.mp4">Shipping</button>
   </div>
 
-  <label class="loopwrap"><input type="checkbox" id="loopChk" checked /> loop clip</label>
-
   <script>
     const vid = document.getElementById('vid');
-    const label = document.getElementById('label');
     const btns = [...document.querySelectorAll('button[data-s]')];
-    const loopChk = document.getElementById('loopChk');
 
     let swapToken = 0;
     function play(btn){
       btns.forEach(b=>b.classList.toggle('active', b===btn));
-      label.textContent = btn.textContent;
 
       const token = ++swapToken;
       vid.classList.remove('show');   // hide immediately so prev frame doesn't show
@@ -69,7 +64,7 @@
       setTimeout(() => {
         if (token !== swapToken) return; // a newer click happened, abort
         vid.muted = true;
-        vid.loop = loopChk.checked;
+        vid.loop = true;
         vid.removeAttribute('src');
         vid.load();                     // clear any prior frame
         vid.src = btn.dataset.src + '?v=' + Date.now();
@@ -78,14 +73,13 @@
         const reveal = () => {
           if (token !== swapToken) return;
           vid.classList.add('show');
-          vid.play().catch(() => { label.textContent = btn.textContent + ' — press ▶'; });
+          vid.play().catch(() => {});
         };
         // 'loadeddata' fires once the first frame is decoded
         vid.addEventListener('loadeddata', reveal, { once: true });
       }, 190);
     }
     btns.forEach(b => b.addEventListener('click', ()=>play(b)));
-    loopChk.addEventListener('change', ()=>{ vid.loop = loopChk.checked; });
 
     // start on idle
     play(btns[0]);
