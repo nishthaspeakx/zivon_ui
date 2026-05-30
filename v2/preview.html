@@ -13,9 +13,8 @@
     padding:28px 16px 40px; -webkit-font-smoothing:antialiased;
   }
   .wordmark { font-size:14px; letter-spacing:.42em; font-weight:600; opacity:.85; padding-left:.42em; margin-bottom:22px; }
-  .stage { position:relative; width:min(340px,86vw); aspect-ratio:9/16; border-radius:22px; overflow:hidden;
-    background:#05050a; box-shadow:0 0 60px rgba(80,120,255,.12), inset 0 0 0 1px rgba(255,255,255,.06); }
-  video { width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .18s ease; background:#05050a; }
+  .stage { position:relative; width:min(340px,86vw); aspect-ratio:9/16; background:transparent; }
+  video { width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .18s ease; background:transparent; }
   video.show { opacity:1; }
   .label { margin:18px 0 4px; font-size:16px; letter-spacing:.18em; text-transform:uppercase; opacity:.55; min-height:20px; }
   .buttons { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:22px; max-width:420px; }
@@ -38,7 +37,7 @@
   <div class="wordmark">ZIVON</div>
 
   <div class="stage">
-    <video id="vid" playsinline autoplay muted loop controls preload="auto"></video>
+    <video id="vid" playsinline autoplay muted loop preload="auto"></video>
   </div>
 
   <div class="label" id="label">Idle</div>
@@ -47,7 +46,7 @@
     <button data-s="idle"       data-src="0_idle.mp4">Idle</button>
     <button data-s="listening"  data-src="1_listening.mp4">Listening</button>
     <button data-s="thinking"   data-src="2_thinking.mp4">Thinking</button>
-    <button data-s="responding" data-src="3_responding.mp4">Responding</button>
+    <button data-s="responding" data-src="3_responding.mp4">Shipping</button>
   </div>
 
   <label class="loopwrap"><input type="checkbox" id="loopChk" checked /> loop clip</label>
