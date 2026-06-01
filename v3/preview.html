@@ -65,32 +65,39 @@
 
     // ---- Web Audio: synthesize per-state earcons ----
     const Sound = (() => {
-      let ctx = null, muted = false, ambientStop = null;
-      function ensure(){
-        if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-        if (ctx.state === 'suspended') ctx.resume();
+      let ctx = null, master = null, muted = false, ambientStop = null;
+      async function ensure(){
+        if (!ctx) {
+          ctx = new (window.AudioContext || window.webkitAudioContext)();
+          master = ctx.createGain();
+          master.gain.value = 0.9;             // master ~ unity
+          master.connect(ctx.destination);
+        }
+        if (ctx.state === 'suspended') {
+          try { await ctx.resume(); } catch(e) {}
+        }
         return ctx;
       }
-      function tone(freq, start, dur, type='sine', peakGain=0.12){
-        const c = ensure();
+      async function tone(freq, start, dur, type='sine', peakGain=0.55){
+        const c = await ensure();
         const o = c.createOscillator();
         const g = c.createGain();
         o.type = type; o.frequency.value = freq;
-        o.connect(g); g.connect(c.destination);
+        o.connect(g); g.connect(master);
         const t0 = c.currentTime + start;
         g.gain.setValueAtTime(0.0001, t0);
         g.gain.exponentialRampToValueAtTime(peakGain, t0 + 0.04);
         g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
         o.start(t0); o.stop(t0 + dur + 0.05);
       }
-      function pad(freqs, duration, peakGain=0.05){
-        const c = ensure();
+      async function pad(freqs, duration, peakGain=0.18){
+        const c = await ensure();
         const stops = [];
         freqs.forEach(f => {
           const o = c.createOscillator();
           const g = c.createGain();
           o.type = 'sine'; o.frequency.value = f;
-          o.connect(g); g.connect(c.destination);
+          o.connect(g); g.connect(master);
           const t0 = c.currentTime;
           g.gain.setValueAtTime(0.0001, t0);
           g.gain.exponentialRampToValueAtTime(peakGain, t0 + 0.8);
@@ -101,42 +108,42 @@
         });
         return () => stops.forEach(s => s());
       }
-      function stopAmbient(){ if (ambientStop) { ambientStop(); ambientStop = null; } }
+      async function stopAmbient(){ if (ambientStop) { const fn = await ambientStop; fn(); ambientStop = null; } }
 
-      // Per-state earcons. Frequencies chosen to match each state's "color" of sound.
+      // Per-state earcons. Audible peakGain values (~0.3-0.6). Master = 0.9.
       const earcons = {
-        idle(){
+        async idle(){
           // soft low warm pad — present, unobtrusive
-          tone(220, 0,    1.4, 'sine', 0.06); // A3
-          tone(330, 0.05, 1.4, 'sine', 0.04); // E4
-          ambientStop = pad([110, 165], 12, 0.018); // very low ambient bed
+          tone(220, 0,    1.4, 'sine', 0.25); // A3
+          tone(330, 0.05, 1.4, 'sine', 0.18); // E4
+          ambientStop = pad([110, 165], 12, 0.08);
         },
-        listening(){
+        async listening(){
           // rising bright chime — "I hear you"
-          tone(523.25, 0,    0.5, 'sine',     0.10); // C5
-          tone(659.25, 0.12, 0.5, 'sine',     0.10); // E5
-          tone(783.99, 0.24, 0.7, 'triangle', 0.09); // G5
-          ambientStop = pad([523.25, 783.99], 14, 0.012); // shimmery sustain
+          tone(523.25, 0,    0.5, 'sine',     0.55); // C5
+          tone(659.25, 0.12, 0.5, 'sine',     0.55); // E5
+          tone(783.99, 0.24, 0.7, 'triangle', 0.50); // G5
+          ambientStop = pad([523.25, 783.99], 14, 0.05);
         },
-        thinking(){
+        async thinking(){
           // pulsing reasoning hum — slightly mysterious
-          tone(440.00, 0,    0.55, 'triangle', 0.07); // A4
-          tone(554.37, 0.18, 0.55, 'triangle', 0.06); // C#5
-          tone(659.25, 0.36, 0.7,  'triangle', 0.07); // E5
-          ambientStop = pad([220, 277.18, 329.63], 16, 0.014); // low pulsing pad
+          tone(440.00, 0,    0.55, 'triangle', 0.40); // A4
+          tone(554.37, 0.18, 0.55, 'triangle', 0.35); // C#5
+          tone(659.25, 0.36, 0.7,  'triangle', 0.40); // E5
+          ambientStop = pad([220, 277.18, 329.63], 16, 0.07);
         },
-        shipping(){
+        async shipping(){
           // bright triumphant arpeggio — the win
-          tone(523.25, 0,    0.45, 'triangle', 0.10); // C5
-          tone(659.25, 0.10, 0.45, 'triangle', 0.10); // E5
-          tone(783.99, 0.20, 0.50, 'triangle', 0.11); // G5
-          tone(1046.50,0.30, 0.85, 'sine',     0.12); // C6 (bright)
-          ambientStop = pad([523.25, 659.25, 783.99], 14, 0.014); // warm sustained chord
+          tone(523.25, 0,    0.45, 'triangle', 0.55); // C5
+          tone(659.25, 0.10, 0.45, 'triangle', 0.55); // E5
+          tone(783.99, 0.20, 0.50, 'triangle', 0.60); // G5
+          tone(1046.50,0.30, 0.85, 'sine',     0.65); // C6 bright
+          ambientStop = pad([523.25, 659.25, 783.99], 14, 0.06);
         }
       };
-      function play(state){
+      async function play(state){
         if (muted) return;
-        stopAmbient();
+        await stopAmbient();
         const fn = earcons[state];
         if (fn) fn();
       }
@@ -144,16 +151,19 @@
         muted = m;
         if (m) stopAmbient();
       }
-      return { play, setMuted, isMuted: () => muted };
+      return { play, setMuted, isMuted: () => muted, resume: ensure };
     })();
 
     // ---- audio toggle UI ----
     const audioBtn = document.getElementById('audioToggle');
-    audioBtn.addEventListener('click', () => {
+    audioBtn.addEventListener('click', async () => {
+      await Sound.resume();      // unlock the AudioContext on user gesture
       const next = !Sound.isMuted();
       Sound.setMuted(next);
       audioBtn.classList.toggle('muted', next);
       audioBtn.textContent = next ? '🔇' : '🔊';
+      // brief audible confirmation when unmuting
+      if (!next) Sound.play('listening');
     });
 
     let swapToken = 0;
@@ -185,8 +195,22 @@
     }
     btns.forEach(b => b.addEventListener('click', ()=>play(b)));
 
-    // start on idle
-    play(btns[0]);
+    // start on idle (visual only — sound waits for a real user gesture)
+    btns.forEach(b=>b.classList.toggle('active', b===btns[0]));
+    (function bootVisual(){
+      const token = ++swapToken;
+      vid.classList.remove('show');
+      setTimeout(() => {
+        vid.muted = true; vid.loop = true;
+        vid.src = btns[0].dataset.src + '?v=' + Date.now();
+        vid.load();
+        vid.addEventListener('loadeddata', () => {
+          if (token !== swapToken) return;
+          vid.classList.add('show');
+          vid.play().catch(()=>{});
+        }, { once:true });
+      }, 50);
+    })();
   </script>
 </body>
 </html>
