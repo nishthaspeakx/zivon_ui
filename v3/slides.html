@@ -407,12 +407,52 @@
     <div class="closer">Color tells you <strong>what state</strong> Zivon is in. Motion tells you <span class="em"><strong>what that state feels like.</strong></span></div>
   </section>
 
+  <!-- SLIDE 3 — Reflection -->
+  <section class="slide" data-i="3">
+    <div class="eyebrow">Zivon Voice UI · Design Rationale</div>
+    <h1>Why the <span class="accent">reflection</span>.</h1>
+    <div class="sub">The orb rests on a surface, not in the void. A subtle mirror beneath does four things at once.</div>
+
+    <div class="grid">
+      <div class="card" style="--accent:var(--c-listen)">
+        <div class="state-name">Grounding</div>
+        <div class="hex">Physical presence</div>
+        <div class="signal">"Something I could touch"</div>
+        <div class="rationale">The reflection tells the brain Zivon is a <em>physical thing</em> in a space — not a floating cartoon. Weight and place build trust.</div>
+      </div>
+
+      <div class="card" style="--accent:var(--c-idle)">
+        <div class="state-name">Continuity</div>
+        <div class="hex">One object, four moods</div>
+        <div class="signal">"Same orb, new state"</div>
+        <div class="rationale">All four states share the same floor. The reflection is the visual thread that keeps Idle → Listening → Thinking → Shipping feeling like <em>one entity changing</em>, not four different things.</div>
+      </div>
+
+      <div class="card" style="--accent:var(--c-think)">
+        <div class="state-name">Premium signal</div>
+        <div class="hex">Industry language</div>
+        <div class="signal">"Reads as 2026, not 2010"</div>
+        <div class="rationale">Every flagship AI surface — Siri, Apple Intelligence, Humane — places its visual on a reflective plane. Floating-on-black reads as a demo. Reflection reads as a product.</div>
+      </div>
+
+      <div class="card" style="--accent:var(--c-ship)">
+        <div class="state-name">Brand metaphor</div>
+        <div class="hex">In your world</div>
+        <div class="signal">"Not on top of it"</div>
+        <div class="rationale">Zivon doesn't hover above the user's work — it sits inside it. The reflection makes that promise visible in a single glance. The orb is <em>with</em> you, not <em>at</em> you.</div>
+      </div>
+    </div>
+
+    <div class="closer">The reflection grounds Zivon in <strong>your space.</strong> It says <span class="em"><strong>this is real, and it's here with you.</strong></span></div>
+  </section>
+
 </div>
 
 <nav>
   <button id="prev" aria-label="Previous">‹</button>
   <span class="dot active" data-go="1"></span>
   <span class="dot" data-go="2"></span>
+  <span class="dot" data-go="3"></span>
   <button id="next" aria-label="Next">›</button>
 </nav>
 
@@ -433,6 +473,7 @@
     else if (e.key==='ArrowLeft' || e.key==='PageUp') go(i-1);
     else if (e.key==='1') go(0);
     else if (e.key==='2') go(1);
+    else if (e.key==='3') go(2);
     else if (e.key.toLowerCase()==='f') document.documentElement.requestFullscreen?.();
   });
 </script>
