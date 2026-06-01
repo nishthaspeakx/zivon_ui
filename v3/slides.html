@@ -124,12 +124,13 @@
     text-align:center;
   }
   .hex {
-    font-family: "SF Mono", ui-monospace, Menlo, monospace;
     font-size: 12px;
     color: var(--muted);
     text-align:center;
     margin: 4px 0 14px;
-    letter-spacing:.08em;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:600;
   }
   .signal {
     font-size: clamp(15px, 1.25vw, 17px);
@@ -329,7 +330,7 @@
       <div class="card" style="--accent:var(--c-idle)">
         <div class="orb"></div>
         <div class="state-name">Idle</div>
-        <div class="hex">#3A4FF5</div>
+        <div class="hex">Deep Indigo</div>
         <div class="signal">"I'm here when you need me"</div>
         <div class="rationale">Calming, trustworthy, sustainable for hours on-screen. Same hue family Siri uses at rest.</div>
       </div>
@@ -337,7 +338,7 @@
       <div class="card" style="--accent:var(--c-listen)">
         <div class="orb"></div>
         <div class="state-name">Listening</div>
-        <div class="hex">#20D8FF</div>
+        <div class="hex">Electric Cyan</div>
         <div class="signal">"I hear you"</div>
         <div class="rationale">The universal listening cue. Google Assistant, Alexa, ChatGPT Voice — 20 years of user training in a single hue.</div>
       </div>
@@ -345,7 +346,7 @@
       <div class="card" style="--accent:var(--c-think)">
         <div class="orb"></div>
         <div class="state-name">Thinking</div>
-        <div class="hex">#A64DFF</div>
+        <div class="hex">Vivid Violet</div>
         <div class="signal">"I'm reasoning"</div>
         <div class="rationale">The 2026 color of AI cognition. Anthropic, OpenAI, Perplexity all signal reasoning with violet.</div>
       </div>
@@ -353,7 +354,7 @@
       <div class="card" style="--accent:var(--c-ship)">
         <div class="orb"></div>
         <div class="state-name">Shipping</div>
-        <div class="hex">#FFB84D</div>
+        <div class="hex">Warm Amber</div>
         <div class="signal">"I delivered"</div>
         <div class="rationale">The only warm hue in the journey. Triggers a reward response — users <em>feel</em> the ship, not just read "done."</div>
       </div>
@@ -375,40 +376,31 @@
 
     <div class="grid">
       <div class="card anim-card" style="--accent:var(--c-idle)">
-        <div class="motion-frame m-idle"><div class="dot"></div></div>
         <div class="state-name">Idle</div>
-        <div class="signal">Slow breathing</div>
-        <div class="rationale">A breathing rhythm signals <em>life</em> without demanding attention. Static would read as frozen.</div>
+        <div class="hex">Slow breathing</div>
+        <div class="signal">"Alive, not waiting"</div>
+        <div class="rationale">A breathing rhythm signals <em>life</em> without demanding attention. Static would read as frozen or disconnected.</div>
       </div>
 
       <div class="card anim-card" style="--accent:var(--c-listen)">
-        <div class="motion-frame m-listen">
-          <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-          <div class="core"></div>
-        </div>
         <div class="state-name">Listening</div>
-        <div class="signal">Ripples outward</div>
-        <div class="rationale">The universal "sound spreading" metaphor. Reactive to the user's voice — speech becomes motion.</div>
+        <div class="hex">Ripples outward</div>
+        <div class="signal">"Your voice, made visible"</div>
+        <div class="rationale">The universal "sound spreading" metaphor — drop a stone in water. Reactive to the user's voice, so speech becomes motion.</div>
       </div>
 
       <div class="card anim-card" style="--accent:var(--c-think)">
-        <div class="motion-frame m-think"><div class="swirl"></div></div>
         <div class="state-name">Thinking</div>
-        <div class="signal">Neural swirl</div>
-        <div class="rationale">A literal cognition metaphor. Replaces a dead loading spinner with <em>visible thought</em>.</div>
+        <div class="hex">Neural swirl</div>
+        <div class="signal">"Visible cognition"</div>
+        <div class="rationale">A literal cognition metaphor. Replaces a dead loading spinner with <em>visible thought</em> — users stop wondering if it crashed.</div>
       </div>
 
       <div class="card anim-card" style="--accent:var(--c-ship)">
-        <div class="motion-frame m-ship">
-          <div class="pad"></div>
-          <div class="beam"></div>
-          <div class="spark"></div>
-          <div class="spark s2"></div>
-          <div class="spark s3"></div>
-        </div>
         <div class="state-name">Shipping</div>
-        <div class="signal">Launch beam</div>
-        <div class="rationale">Two-act delivery story — work assembles, then it launches. Upward motion = growth, momentum, win.</div>
+        <div class="hex">Launch beam</div>
+        <div class="signal">"Delivered, not done"</div>
+        <div class="rationale">Two-act delivery story — work assembles, then it launches. Upward motion = growth, momentum, the win moment.</div>
       </div>
     </div>
 
