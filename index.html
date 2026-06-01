@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zivon Voice UI</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0A0A0F; color:#EDEDF2; min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; padding:48px 20px 60px;
+    display:flex; flex-direction:column; align-items:center; }
+  h1 { font-size:28px; letter-spacing:.32em; font-weight:800; text-transform:uppercase; }
+  .sub { margin-top:10px; font-size:14px; opacity:.55; letter-spacing:.04em; }
+  .grid { margin-top:48px; display:grid; gap:18px; width:min(640px,94vw); }
+  a.card { display:block; padding:22px 24px; border-radius:14px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);
+    text-decoration:none; color:inherit; transition:all .2s ease; }
+  a.card:hover { background:rgba(255,255,255,.08); border-color:rgba(120,140,255,.4); transform:translateY(-2px); }
+  .row { display:flex; justify-content:space-between; align-items:baseline; gap:14px; }
+  .name { font-size:18px; font-weight:700; letter-spacing:.06em; }
+  .tag { font-size:11px; letter-spacing:.18em; text-transform:uppercase; padding:4px 9px; border-radius:999px; opacity:.85; }
+  .tag.frozen { background:rgba(120,140,255,.16); color:#9fb6ff; }
+  .tag.live { background:rgba(80,220,180,.16); color:#7be0b8; }
+  .desc { margin-top:8px; font-size:13px; opacity:.6; line-height:1.5; }
+  .foot { margin-top:48px; font-size:12px; opacity:.4; }
+  .foot a { color:inherit; }
+</style>
+</head>
+<body>
+  <h1>ZIVON</h1>
+  <div class="sub">Voice UI — Listen · Think · Ship</div>
+
+  <div class="grid">
+    <a class="card" href="v3/preview.html">
+      <div class="row"><div class="name">v3 — current</div><span class="tag live">Live</span></div>
+      <div class="desc">Bold ZIVON — Think and Ship label, no chrome, 4 state buttons. Slowed listening + thinking, new launch-arc shipping clip. Ping-pong seamless loops.</div>
+    </a>
+    <a class="card" href="v2/preview.html">
+      <div class="row"><div class="name">v2</div><span class="tag frozen">Frozen</span></div>
+      <div class="desc">Bold ZIVON header replaces dynamic state label. Loop toggle removed. Stage chrome stripped.</div>
+    </a>
+    <a class="card" href="v1/preview.html">
+      <div class="row"><div class="name">v1 — baseline</div><span class="tag frozen">Frozen</span></div>
+      <div class="desc">Original 4-state preview with stage frame, glow shadow, state label, and loop toggle.</div>
+    </a>
+  </div>
+
+  <div class="foot">Source: <a href="https://github.com/nishthaspeakx/zivon_ui">github.com/nishthaspeakx/zivon_ui</a></div>
+</body>
+</html>
