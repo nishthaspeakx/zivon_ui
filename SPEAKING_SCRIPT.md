@@ -54,7 +54,39 @@
 
 ---
 
-## Slide 5 — LIVE DEMO (2 minutes — the main event)
+## Slide 5 — Why These Colors (45 seconds)
+
+> "Before the demo — a quick word on why these particular four colors."
+
+> "It's a cool-to-warm journey across the color wheel. **Blue → Cyan → Violet → Amber.** Rest to reward."
+
+*[Point to each swatch.]*
+
+> "Indigo for Idle — the *I'm here* color. Same hue Siri uses at rest. Cyan for Listening — twenty years of user training tells the brain 'system is hearing me.' Violet for Thinking — the 2026 color of AI cognition; Anthropic, OpenAI, Perplexity all use it. And amber for Shipping — the only warm hue in the journey. It triggers a reward response. Users *feel* the ship instead of just reading 'done.'"
+
+> "Users finish every interaction warmer than they started. That's by design."
+
+---
+
+## Slide 6 — Why These Animations (45 seconds)
+
+> "And one slide on the motion. Each animation is a metaphor the brain decodes in under a second."
+
+*[Pause on each row.]*
+
+> "**Idle breathes.** A slow pulse mimics a resting heartbeat. The orb feels *alive*, not frozen."
+
+> "**Listening ripples.** Concentric rings expand outward — the universal 'sound spreading' metaphor. We make them reactive to the user's voice amplitude, so users see their own speech become motion."
+
+> "**Thinking swirls.** A violet brain shape with neural particles connecting. It replaces a dead loading spinner with *visible thought*. Users stop wondering if it crashed."
+
+> "**Shipping launches.** A two-act sequence — dashboards form, then a light beam shoots upward. Phase one is 'preparing the work,' phase two is the literal shipping metaphor. Upward direction signals growth and positive outcome."
+
+> "Color tells you what state Zivon is in. Motion tells you *what that state feels like.*"
+
+---
+
+## Slide 7 — LIVE DEMO (2 minutes — the main event)
 
 > "Let me show you. Open the link I just shared on your phone."
 
@@ -84,7 +116,7 @@
 
 ---
 
-## Slide 6 — Why This Wins (45 seconds)
+## Slide 8 — Why This Wins (45 seconds)
 
 > "Five reasons this is the right move:"
 
@@ -100,7 +132,7 @@
 
 ---
 
-## Slide 7 — The Ask (30 seconds)
+## Slide 9 — The Ask (30 seconds)
 
 *[Pause. Look up from the screen.]*
 
