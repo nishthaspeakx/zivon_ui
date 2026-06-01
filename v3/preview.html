@@ -31,6 +31,14 @@
   button[data-s="thinking"].active   { color:#c66bff; background:rgba(180,80,255,.16); }
   button[data-s="responding"].active { color:#ffc24d; background:rgba(255,180,60,.16); }
   .loopwrap { margin-top:18px; font-size:12px; opacity:.55; display:flex; gap:7px; align-items:center; }
+  .audio-toggle { position:fixed; top:18px; right:18px; z-index:10;
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+    color:#EDEDF2; cursor:pointer; font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(8px); transition:all .2s; }
+  .audio-toggle:hover { background:rgba(255,255,255,0.12); }
+  .audio-toggle.muted { opacity:.45; }
 </style>
 </head>
 <body>
@@ -49,13 +57,109 @@
     <button data-s="responding" data-src="3_responding.mp4">Shipping</button>
   </div>
 
+  <button class="audio-toggle" id="audioToggle" aria-label="Toggle sound" title="Toggle sound">🔊</button>
+
   <script>
     const vid = document.getElementById('vid');
     const btns = [...document.querySelectorAll('button[data-s]')];
 
+    // ---- Web Audio: synthesize per-state earcons ----
+    const Sound = (() => {
+      let ctx = null, muted = false, ambientStop = null;
+      function ensure(){
+        if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+        return ctx;
+      }
+      function tone(freq, start, dur, type='sine', peakGain=0.12){
+        const c = ensure();
+        const o = c.createOscillator();
+        const g = c.createGain();
+        o.type = type; o.frequency.value = freq;
+        o.connect(g); g.connect(c.destination);
+        const t0 = c.currentTime + start;
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(peakGain, t0 + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        o.start(t0); o.stop(t0 + dur + 0.05);
+      }
+      function pad(freqs, duration, peakGain=0.05){
+        const c = ensure();
+        const stops = [];
+        freqs.forEach(f => {
+          const o = c.createOscillator();
+          const g = c.createGain();
+          o.type = 'sine'; o.frequency.value = f;
+          o.connect(g); g.connect(c.destination);
+          const t0 = c.currentTime;
+          g.gain.setValueAtTime(0.0001, t0);
+          g.gain.exponentialRampToValueAtTime(peakGain, t0 + 0.8);
+          g.gain.setValueAtTime(peakGain, t0 + duration - 0.6);
+          g.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+          o.start(t0); o.stop(t0 + duration + 0.05);
+          stops.push(()=> { try{g.gain.cancelScheduledValues(c.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.3); o.stop(c.currentTime + 0.35);}catch(e){} });
+        });
+        return () => stops.forEach(s => s());
+      }
+      function stopAmbient(){ if (ambientStop) { ambientStop(); ambientStop = null; } }
+
+      // Per-state earcons. Frequencies chosen to match each state's "color" of sound.
+      const earcons = {
+        idle(){
+          // soft low warm pad — present, unobtrusive
+          tone(220, 0,    1.4, 'sine', 0.06); // A3
+          tone(330, 0.05, 1.4, 'sine', 0.04); // E4
+          ambientStop = pad([110, 165], 12, 0.018); // very low ambient bed
+        },
+        listening(){
+          // rising bright chime — "I hear you"
+          tone(523.25, 0,    0.5, 'sine',     0.10); // C5
+          tone(659.25, 0.12, 0.5, 'sine',     0.10); // E5
+          tone(783.99, 0.24, 0.7, 'triangle', 0.09); // G5
+          ambientStop = pad([523.25, 783.99], 14, 0.012); // shimmery sustain
+        },
+        thinking(){
+          // pulsing reasoning hum — slightly mysterious
+          tone(440.00, 0,    0.55, 'triangle', 0.07); // A4
+          tone(554.37, 0.18, 0.55, 'triangle', 0.06); // C#5
+          tone(659.25, 0.36, 0.7,  'triangle', 0.07); // E5
+          ambientStop = pad([220, 277.18, 329.63], 16, 0.014); // low pulsing pad
+        },
+        shipping(){
+          // bright triumphant arpeggio — the win
+          tone(523.25, 0,    0.45, 'triangle', 0.10); // C5
+          tone(659.25, 0.10, 0.45, 'triangle', 0.10); // E5
+          tone(783.99, 0.20, 0.50, 'triangle', 0.11); // G5
+          tone(1046.50,0.30, 0.85, 'sine',     0.12); // C6 (bright)
+          ambientStop = pad([523.25, 659.25, 783.99], 14, 0.014); // warm sustained chord
+        }
+      };
+      function play(state){
+        if (muted) return;
+        stopAmbient();
+        const fn = earcons[state];
+        if (fn) fn();
+      }
+      function setMuted(m){
+        muted = m;
+        if (m) stopAmbient();
+      }
+      return { play, setMuted, isMuted: () => muted };
+    })();
+
+    // ---- audio toggle UI ----
+    const audioBtn = document.getElementById('audioToggle');
+    audioBtn.addEventListener('click', () => {
+      const next = !Sound.isMuted();
+      Sound.setMuted(next);
+      audioBtn.classList.toggle('muted', next);
+      audioBtn.textContent = next ? '🔇' : '🔊';
+    });
+
     let swapToken = 0;
     function play(btn){
       btns.forEach(b=>b.classList.toggle('active', b===btn));
+      Sound.play(btn.dataset.s);
 
       const token = ++swapToken;
       vid.classList.remove('show');   // hide immediately so prev frame doesn't show
